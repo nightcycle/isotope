@@ -24,21 +24,19 @@ function Isotope:Destroy()
 	-- 	self.Instance:Destroy()
 	-- end
 	self._Maid:Destroy()
+	-- self._Fuse:Destroy()
 	for k, v in pairs(self) do
-		if (typeof(v) == "table" and v.kind == "State") or typeof(v) == "Instance" then
-			v:Destroy()
-		end
 		self[k] = nil
 	end
 end
 
-function Isotope.import(stateOrVal, altValue)
-	if type(stateOrVal) == "table" and stateOrVal.type == "state" then
+function Isotope:Import(stateOrVal, altValue)
+	if type(stateOrVal) == "table" and stateOrVal.type == "State" then
 		return stateOrVal
 	elseif stateOrVal ~= nil then
-		return Fusion.Value(stateOrVal)
+		return self._Fuse.Value(stateOrVal)
 	else
-		return Fusion.Value(altValue)
+		return self._Fuse.Value(altValue)
 	end
 end
 
@@ -68,6 +66,7 @@ end
 function Isotope.new(config)
 	local self = setmetatable({}, Isotope)
 	self._Maid = Maid.new()
+	self._Fuse = Fusion.fuse(self._Maid)
 	return self
 end
 
