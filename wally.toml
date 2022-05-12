@@ -1,14 +1,14 @@
 [package]
 name = "nightcycle/isotope"
 description = "A basic template for doing OOP with cold-fusion"
-version = "1.1.13"
+version = "1.1.14"
 authors = ["CJ Oyer <coyer@nightcycle.us>"]
 realm = "shared"
 registry = "https://github.com/upliftgames/wally-index"
 exclude = ["Packages", ".vscode"]
 
 [dependencies]
-coldfusion = "nightcycle/cold-fusion@1.0.14"
+coldfusion = "nightcycle/cold-fusion@1.0.18"
 signal = "quenty/signal@^2.0.0-canary"
 maid = "quenty/maid@^2.0.1-canary"
 testez = "roblox/testez@0.4.1"
