@@ -2,6 +2,8 @@ local packages = script.Parent
 local Fusion = require(packages:WaitForChild("coldfusion"))
 local Maid = require(packages:WaitForChild("maid"))
 
+local Construct = require(script:WaitForChild("Construct"))
+
 local Isotope = {}
 Isotope.ClassName = "Isotope"
 Isotope.__index = Isotope
@@ -15,23 +17,14 @@ Isotope.__index = Isotope
 	@enduml
 ]]--
 function Isotope:Destroy()
-	-- if self.Instance and self.Instance.Get then
-	-- 	local val = self.Instance:Get()
-	-- 	if val then
-	-- 		val:Destroy()
-	-- 	end
-	-- elseif self.Instance and self.Instance:IsA("Instance") then
-	-- 	self.Instance:Destroy()
-	-- end
 	self._Maid:Destroy()
-	-- self._Fuse:Destroy()
 	for k, v in pairs(self) do
 		self[k] = nil
 	end
 end
 
 function Isotope:Import(stateOrVal, altValue)
-	if type(stateOrVal) == "table" and stateOrVal.type == "State" then
+	if type(stateOrVal) == "table" and stateOrVal.IsA and stateOrVal:IsA("State") then
 		return stateOrVal
 	elseif stateOrVal ~= nil then
 		return self._Fuse.Value(stateOrVal)
@@ -41,7 +34,7 @@ function Isotope:Import(stateOrVal, altValue)
 end
 
 function Isotope:Construct()
-	Fusion.construct(self)
+	Construct(self)
 end
 
 function Isotope:IsA(className)
