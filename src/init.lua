@@ -17,6 +17,8 @@ Isotope.__index = Isotope
 	@enduml
 ]]--
 function Isotope:Destroy()
+	if self._isAlive ~= true then return end
+	self._isAlive = false
 	self._Maid:Destroy()
 	for k, v in pairs(self) do
 		self[k] = nil
@@ -58,6 +60,7 @@ end
 
 function Isotope.new(config)
 	local self = setmetatable({}, Isotope)
+	self._isAlive = true
 	self._Maid = Maid.new()
 	self._Fuse = Fusion.fuse(self._Maid)
 	return self
