@@ -1,8 +1,9 @@
+--!strict
 -- constructs an OOP instance
 local package = script.Parent
 local packages = package.Parent
-local maidConstructor = require(packages:WaitForChild("maid"))
-local signalConstructor = require(packages:WaitForChild("signal"))
+local maidConstructor = require(packages.maid)
+local signalConstructor = require(packages.signal)
 
 local attributeTypes = {
 	string = true,
@@ -54,9 +55,10 @@ local metaTags = {
 	__len = true,
 }
 
-function assembleObject(tabl)
-	local object = {}
-	local meta = getmetatable(tabl)
+function assembleObject(tabl: any): {[string]: any}
+	local object: {[string]: any} = {}
+
+	local meta: {[string]: any} = getmetatable(tabl)
 	if meta then
 		meta = assembleObject(meta)
 	end
@@ -68,6 +70,7 @@ function assembleObject(tabl)
 	for k, v in pairs(tabl) do
 		object[k] = v
 	end
+
 	return object
 end
 
@@ -77,7 +80,7 @@ return function(object)
 	local Value = object._Fuse.Value
 	local Computed = object._Fuse.Computed
 
-	local maid = self._Maid
+	local maid: {[any]: any} = self._Maid
 	assert(maid ~= nil, "No maid found")
 
 	local _Instance
@@ -105,12 +108,13 @@ return function(object)
 		if not inst then
 			self._Maid["f_"..key] = nil
 		end
-		local bindableFunction = Instance.new("BindableFunction", inst)
+		local bindableFunction = Instance.new("BindableFunction")
 		bindableFunction.Name = key
 		self._Maid["f_"..key] = bindableFunction
 		bindableFunction.OnInvoke = function(...)
 			return value(self, ...)
 		end
+		bindableFunction.Parent = inst
 	end
 
 	local function setEvent(inst, key, value)
@@ -118,16 +122,17 @@ return function(object)
 			self._Maid["f_"..key] = nil
 			self._Maid["f_event_"..key] = nil
 		end
-		local bindableEvent = Instance.new("BindableEvent", inst)
+		local bindableEvent = Instance.new("BindableEvent")
 		bindableEvent.Name = key
 		self._Maid["f_"..key] = bindableEvent
 		self._Maid["f_event_"..key] = value:Connect(function(...)
 			bindableEvent:Fire(...)
 		end)
+		bindableEvent.Parent = inst
 	end
 
 	local function valueContainer(inst, key, value)
-		local valMaid = maidConstructor.new()
+		local valMaid: any = maidConstructor.new()
 		local signal = signalConstructor.new()
 		
 		local readFromStateEnabled = true
@@ -157,10 +162,12 @@ return function(object)
 					end
 				elseif isObject then
 					valMaid.AttributeChanged = nil
+
 					inst:SetAttribute(key, nil)
 					if not valMaid.Object or valMaid.Object.ClassName ~= isObject then
-						valMaid.Object = Instance.new(isObject, inst)
+						valMaid.Object = Instance.new(isObject)
 						valMaid.Object.Name = key
+						valMaid.Parent = inst
 					end
 					if typeof(val) == "CFrame" then
 						valMaid.Object:SetAttribute("Position", val.Position)
@@ -170,14 +177,19 @@ return function(object)
 					end
 					valMaid.Object.Value = val
 					if writeToStateEnabled then
+
 						valMaid.ObjectChanged = valMaid.Object:GetPropertyChangedSignal("Value"):Connect(function()
 							signal:Fire(valMaid.Object.Value)
 						end)
+
 					end
 				else
 					valMaid.ObjectChanged = nil
+
 					valMaid.AttributeChanged = nil
+
 					valMaid.Object = nil
+
 				end
 
 				if writeToStateEnabled then
@@ -190,7 +202,7 @@ return function(object)
 
 	end
 
-	local function setProperty(inst, key, value)
+	local function setProperty(inst: Instance, key, value)
 		-- print("Setting property", inst:GetFullName(), key, value)
 		if not inst then
 			-- print("Not inst")
@@ -220,6 +232,7 @@ return function(object)
 					setEvent(inst, key, value)
 				elseif typeof(value) == "table" and value.IsA and value:IsA("State") then
 					if key ~= "Instance" then
+						assert(inst ~= nil)
 						setProperty(inst, key, value)
 					end
 				end

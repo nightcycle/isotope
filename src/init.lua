@@ -1,21 +1,15 @@
-local packages = script.Parent
-local Fusion = require(packages:WaitForChild("coldfusion"))
-local Maid = require(packages:WaitForChild("maid"))
+--!strict
 
-local Construct = require(script:WaitForChild("Construct"))
+local packages = script.Parent
+local Fusion = require(packages.coldfusion)
+local Maid = require(packages.maid)
+
+local Construct = require(script.Construct)
 
 local Isotope = {}
 Isotope.ClassName = "Isotope"
 Isotope.__index = Isotope
 
---[[
-	@startuml
-	!theme crt-amber
-	class Isotope {
-
-	}
-	@enduml
-]]--
 function Isotope:Destroy()
 	if self._isAlive ~= true then return end
 	self._isAlive = false
@@ -58,12 +52,14 @@ function Isotope:IsA(className)
 	return getClasses(self)
 end
 
-function Isotope.new(config)
+function Isotope.new()
 	local self = setmetatable({}, Isotope)
 	self._isAlive = true
 	self._Maid = Maid.new()
 	self._Fuse = Fusion.fuse(self._Maid)
 	return self
 end
+
+export type Isotope = typeof(Isotope.new())
 
 return Isotope
