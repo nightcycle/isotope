@@ -7,6 +7,7 @@ local Maid = require(packages.maid)
 export type State = Fusion.State
 export type ValueState = Fusion.ValueState
 export type Fuse = Fusion.Fuse
+export type Maid = Maid.Maid
 
 local Construct = require(script.Construct)
 
