@@ -4,6 +4,10 @@ local packages = script.Parent
 local Fusion = require(packages.coldfusion)
 local Maid = require(packages.maid)
 
+export type State = Fusion.State
+export type ValueState = Fusion.ValueState
+export type Fuse = Fusion.Fuse
+
 local Construct = require(script.Construct)
 
 local Isotope = {}
@@ -19,7 +23,7 @@ function Isotope:Destroy()
 	end
 end
 
-function Isotope:Import(stateOrVal, altValue)
+function Isotope:Import(stateOrVal, altValue): State
 	if type(stateOrVal) == "table" and stateOrVal.IsA and stateOrVal:IsA("State") then
 		return stateOrVal
 	elseif stateOrVal ~= nil then
@@ -33,7 +37,7 @@ function Isotope:Construct()
 	Construct(self)
 end
 
-function Isotope:IsA(className)
+function Isotope:IsA(className):boolean
 	if className == "Isotope" then return true end
 	if self.ClassName == className then return true end
 	local checkList = {}
