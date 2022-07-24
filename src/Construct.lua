@@ -228,7 +228,7 @@ return function(object)
 					if key ~= "new" and key ~= "Construct" and key ~= "Destroy" then
 						setFunction(inst, key, value)
 					end
-				elseif typeof(value) == "RBXScriptSignal" or (type(value) == "table" and value.ClassName == "Signal") then
+				elseif typeof(value) == "RBXScriptSignal" or signalConstructor.Is(value) then
 					setEvent(inst, key, value)
 				elseif typeof(value) == "table" and value.IsA and value:IsA("State") then
 					if key ~= "Instance" then
